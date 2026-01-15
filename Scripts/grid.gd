@@ -1,13 +1,29 @@
 extends Node2D
+#wonder if i can fit the whole game in one script and scene
 
 var width : int
 var height : int
 @export var alive_tile := 1
 @export var dead_tile := 0
+@export var player_tile:= 2
+@export var goal_tile := 3
+@export var start_tile:= 4
 
 @onready var life_layer : TileMapLayer = $LifeLayer
 
-#if grid[y][x] is true then itll be alive, and if its false itll be dead, for future reference
+var player_position: Vector2i
+var is_player_alive:= true
+var roundnum : int = 1
+var going_from_left_to_right: bool = true
+var showing_the_round_num_screen: bool = false
+
+#thanks chatgpt
+var number_patterns = {
+	1: [Vector2i(0,0), Vector2i(0,1), Vector2i(0,2)],
+	2: [Vector2i(0,0), Vector2i(1,0), Vector2i(2,0),
+		Vector2i(2,1), Vector2i(1,2), Vector2i(0,2)],
+}
+
 var grid: Array = []
 
 func _ready():
@@ -20,7 +36,80 @@ func _ready():
 	height = viewport_size.y / 16
 	
 	initialize_grid()
+	spawn_player(4)
 	draw_said_grid()
+
+#player 
+func spawn_player(y: int):
+	player_position = Vector2i(get_start_x(), y)
+
+func move_player(direction: Vector2i):
+	if not is_player_alive:
+		return
+	if player_position.x == get_goal_x():
+		advance()
+		return
+	
+	var new_pos := player_position + direction
+	new_pos.x = (new_pos.x +width) % width
+	new_pos.y = (new_pos.y +height) % height
+	
+	player_position = new_pos
+	life()
+	
+	if grid[player_position.y][player_position.x]:
+		is_player_alive = false
+		return
+	
+	draw_player()
+
+# drawing the sqaures
+func draw_player():
+	life_layer.set_cell(player_position, player_tile, Vector2i.ZERO)
+
+func draw_start_and_goal():
+	var starting_x := get_start_x()
+	var goal_x := get_goal_x()
+	
+	for y in range(height):
+		life_layer.set_cell(Vector2i(starting_x, y), start_tile, Vector2i.ZERO)
+		life_layer.set_cell(Vector2i(goal_x, y), goal_tile, Vector2i.ZERO)
+
+func draw_said_grid():
+	life_layer.clear()
+	
+	for y in range(height):
+		for x in range(width):
+			var title_id : int = alive_tile if grid[y][x] else dead_tile
+			life_layer.set_cell(Vector2i(x,y), title_id, Vector2i.ZERO)
+
+func advance():
+	showing_the_round_num_screen = true
+	roundnum += 1
+	going_from_left_to_right= !going_from_left_to_right
+	
+	show_switch_screen()
+	await get_tree().create_timer(1.5).timeout
+	reset_grid()
+	showing_the_round_num_screen = false
+
+func show_switch_screen():
+	life_layer.clear()
+	
+	@warning_ignore("integer_division")
+	var center := Vector2i(width/2, height/2)
+	var numpattern = number_patterns.get(roundnum, [])
+	
+	for offset in numpattern:
+		life_layer.set_cell(center + offset, alive_tile, Vector2i.ZERO)
+
+func reset_grid():
+	initialize_grid()
+	draw_said_grid()
+	draw_start_and_goal()
+	
+	player_position = Vector2i(get_start_x(), player_position.y)
+	draw_player()
 
 func initialize_grid():
 	grid.clear()
@@ -32,14 +121,6 @@ func initialize_grid():
 		
 		grid.append(row)
 
-func draw_said_grid():
-	life_layer.clear()
-	
-	for y in range(height):
-		for x in range(width):
-			var title_id : int = alive_tile if grid[y][x] else dead_tile
-			life_layer.set_cell(Vector2i(x,y), title_id, Vector2i.ZERO)
-
 func life():
 	var new_grid: Array = []
 	
@@ -48,6 +129,10 @@ func life():
 		for x in range(width):
 			var next_cell := count_next_cells(x,y)
 			var alive : bool = grid[y][x]
+			if cant_grow_cell_checker(x):
+				row.append(false)
+				continue
+			
 			if alive:
 				row.append(next_cell == 2 or next_cell == 3)
 			else:
@@ -83,7 +168,25 @@ func count_next_cells(x: int, y:int) -> int:
 					count +=1
 						
 	return count
-	
+func get_start_x() -> int:
+	return 0 if going_from_left_to_right else width - 1
+func get_goal_x() -> int:
+	return width - 1 if going_from_left_to_right else 0
+func cant_grow_cell_checker(x : int) -> bool:
+	return x == get_goal_x() or x == get_start_x()
+
 func _input(event: InputEvent) -> void:
+	if showing_the_round_num_screen:
+		return
+	
 	if event.is_action_pressed("ui_accept"):
 		life()
+		
+	if event.is_action_pressed("ui_up"):
+		move_player(Vector2i(0,-1))
+	elif event.is_action_pressed("ui_down"):
+		move_player(Vector2i(0,1))
+	elif event.is_action_pressed("ui_left"):
+		move_player(Vector2i(-1,0))
+	elif event.is_action_pressed("ui_right"):
+		move_player(Vector2i(1,0))

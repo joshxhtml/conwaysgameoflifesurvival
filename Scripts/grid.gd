@@ -1,7 +1,7 @@
 extends Node2D
 
-@export var width := 20
-@export var height := 20
+var width : int
+var height : int
 @export var alive_tile := 1
 @export var dead_tile := 0
 
@@ -12,6 +12,13 @@ var grid: Array = []
 
 func _ready():
 	randomize()
+	
+	var viewport_size: Vector2i = get_viewport().get_visible_rect().size
+	@warning_ignore("integer_division")
+	width = viewport_size.x /16
+	@warning_ignore("integer_division")
+	height = viewport_size.y / 16
+	
 	initialize_grid()
 	draw_said_grid()
 
@@ -21,7 +28,7 @@ func initialize_grid():
 	for y in range(height):
 		var row: Array = []
 		for x in range(width):
-			row.append(randf() < 0.3)
+			row.append(randf() < 0.2)
 		
 		grid.append(row)
 
@@ -30,7 +37,7 @@ func draw_said_grid():
 	
 	for y in range(height):
 		for x in range(width):
-			var title_id : int = 1 if grid[y][x] else 0
+			var title_id : int = alive_tile if grid[y][x] else dead_tile
 			life_layer.set_cell(Vector2i(x,y), title_id, Vector2i.ZERO)
 
 func life():
@@ -68,14 +75,13 @@ func count_next_cells(x: int, y:int) -> int:
 			if dx == 0 and dy == 0:
 				continue
 				
-				var nx: int = x + dx
-				var ny : int= y + dy
+			var nx: int = (x + dx + width) % width
+			var ny : int= (y + dy + height) % height
 				
-				if nx >= 0 and nx < width and ny >= 0 and ny < height:
-					if grid[ny][nx]:
-						count +=1
+			if nx >= 0 and nx < width and ny >= 0 and ny < height:
+				if grid[ny][nx]:
+					count +=1
 						
-	print(count)
 	return count
 	
 func _input(event: InputEvent) -> void:

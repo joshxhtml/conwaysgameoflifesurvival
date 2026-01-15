@@ -10,19 +10,17 @@ var height : int
 @export var start_tile:= 4
 
 @onready var life_layer : TileMapLayer = $LifeLayer
+@onready var ui := $RoundUi
+@onready var round_label := $RoundUi/ColorRect/Label
+
 
 var player_position: Vector2i
 var is_player_alive:= true
-var roundnum : int = 1
-var going_from_left_to_right: bool = true
+var roundnum : int = 0
+var going_from_left_to_right: bool = false
 var showing_the_round_num_screen: bool = false
 
-#thanks chatgpt
-var number_patterns = {
-	1: [Vector2i(0,0), Vector2i(0,1), Vector2i(0,2)],
-	2: [Vector2i(0,0), Vector2i(1,0), Vector2i(2,0),
-		Vector2i(2,1), Vector2i(1,2), Vector2i(0,2)],
-}
+
 
 var grid: Array = []
 
@@ -34,10 +32,12 @@ func _ready():
 	width = viewport_size.x /16
 	@warning_ignore("integer_division")
 	height = viewport_size.y / 16
-	
+	advance()
 	initialize_grid()
 	spawn_player(4)
+	draw_start_and_goal()
 	draw_said_grid()
+	draw_player()
 
 #player 
 func spawn_player(y: int):
@@ -51,8 +51,11 @@ func move_player(direction: Vector2i):
 		return
 	
 	var new_pos := player_position + direction
-	new_pos.x = (new_pos.x +width) % width
-	new_pos.y = (new_pos.y +height) % height
+	
+	if new_pos.x < 0 or new_pos.x >= width:
+		return
+	if new_pos.y < 0 or new_pos.y >= height:
+		return
 	
 	player_position = new_pos
 	life()
@@ -90,18 +93,14 @@ func advance():
 	
 	show_switch_screen()
 	await get_tree().create_timer(1.5).timeout
+	
+	ui.visible = false
 	reset_grid()
 	showing_the_round_num_screen = false
 
 func show_switch_screen():
-	life_layer.clear()
-	
-	@warning_ignore("integer_division")
-	var center := Vector2i(width/2, height/2)
-	var numpattern = number_patterns.get(roundnum, [])
-	
-	for offset in numpattern:
-		life_layer.set_cell(center + offset, alive_tile, Vector2i.ZERO)
+	round_label.text = "round %d" % roundnum
+	ui.visible = true
 
 func reset_grid():
 	initialize_grid()
@@ -127,11 +126,13 @@ func life():
 	for y in range(height):
 		var row: Array[bool] = []
 		for x in range(width):
-			var next_cell := count_next_cells(x,y)
-			var alive : bool = grid[y][x]
 			if cant_grow_cell_checker(x):
 				row.append(false)
 				continue
+				
+			var next_cell := count_next_cells(x,y)
+			var alive : bool = grid[y][x]
+			
 			
 			if alive:
 				row.append(next_cell == 2 or next_cell == 3)
@@ -142,6 +143,7 @@ func life():
 	
 	grid = new_grid
 	draw_said_grid()
+	draw_start_and_goal()
 
 func count_next_cells(x: int, y:int) -> int:
 	# The 4 Rules of Conways Game of Life

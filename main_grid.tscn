@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dr4v8unt3bsao"]
+[gd_scene load_steps=14 format=3 uid="uid://dr4v8unt3bsao"]
 
 [ext_resource type="Script" uid="uid://dmqejjqx7l8yx" path="res://Scripts/grid.gd" id="1_h75lf"]
 [ext_resource type="Texture2D" uid="uid://eaw0ruupoe7v" path="res://assets/Black.png" id="2_h8f2a"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cfdjff8olegu5" path="res://assets/yellow.png" id="4_h8f2a"]
 [ext_resource type="Texture2D" uid="uid://b43nhwy6y13ix" path="res://assets/green.png" id="5_0m6n6"]
 [ext_resource type="Texture2D" uid="uid://g1wsikgj26oy" path="res://assets/red.png" id="6_4resb"]
+[ext_resource type="FontFile" uid="uid://bxvgywe50qf8l" path="res://assets/determination.ttf" id="7_4resb"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0m6n6"]
 resource_name = "dead tile"
@@ -1720,3 +1721,28 @@ script = ExtResource("1_h75lf")
 
 [node name="LifeLayer" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_j0p8b")
+
+[node name="RoundUi" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="ColorRect" type="ColorRect" parent="RoundUi"]
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="RoundUi/ColorRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("7_4resb")
+theme_override_font_sizes/font_size = 48
+text = "Round: Num"

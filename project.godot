@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="ConwaysGameOfLifeSurvival"
+run/main_scene="uid://dr4v8unt3bsao"
 config/features=PackedStringArray("4.5", "Mobile")
 config/icon="res://icon.svg"
 

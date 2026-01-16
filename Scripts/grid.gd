@@ -11,6 +11,7 @@ var height : int
 
 @onready var life_layer : TileMapLayer = $LifeLayer
 @onready var ui := $RoundUi
+@onready var bg := $RoundUi/ColorRect
 @onready var round_label := $RoundUi/ColorRect/Label
 
 
@@ -32,12 +33,14 @@ func _ready():
 	width = viewport_size.x /16
 	@warning_ignore("integer_division")
 	height = viewport_size.y / 16
-	advance()
+	
 	initialize_grid()
-	spawn_player(4)
-	draw_start_and_goal()
+	@warning_ignore("integer_division")
+	spawn_player(height/2)
 	draw_said_grid()
+	draw_start_and_goal()
 	draw_player()
+	advance()
 
 #player 
 func spawn_player(y: int):
@@ -91,17 +94,16 @@ func advance():
 	roundnum += 1
 	going_from_left_to_right= !going_from_left_to_right
 	
-	show_switch_screen()
-	await get_tree().create_timer(1.5).timeout
+	round_label.text = "round %d" % roundnum
+	await fade_in()
+	await get_tree().create_timer(1.0).timeout
+	reset_grid()
+	await fade_out()
 	
 	ui.visible = false
-	reset_grid()
 	showing_the_round_num_screen = false
 
-func show_switch_screen():
-	round_label.text = "round %d" % roundnum
-	ui.visible = true
-
+#grid things
 func reset_grid():
 	initialize_grid()
 	draw_said_grid()
@@ -145,6 +147,7 @@ func life():
 	draw_said_grid()
 	draw_start_and_goal()
 
+#rules and callings
 func count_next_cells(x: int, y:int) -> int:
 	# The 4 Rules of Conways Game of Life
 	#Any live cell with fewer than two live neighbors dies.
@@ -177,13 +180,28 @@ func get_goal_x() -> int:
 func cant_grow_cell_checker(x : int) -> bool:
 	return x == get_goal_x() or x == get_start_x()
 
+# ui stuff
+
+
+func fade_in():
+	ui.visible = true
+	bg.modulate.a = 0.0
+	
+	var tween = create_tween()
+	tween.tween_property(bg, "modulate:a", 1.0, 0.4)
+	await tween.finished
+func fade_out():
+	var tween2 :=  create_tween()
+	tween2.tween_property(bg, "modulate:a", 0.0, 0.4)
+	await tween2.finished
+	
+	ui.visible = false
+
+#input stuff, and by stuff i mean one function, godot makes input so easy
 func _input(event: InputEvent) -> void:
 	if showing_the_round_num_screen:
 		return
 	
-	if event.is_action_pressed("ui_accept"):
-		life()
-		
 	if event.is_action_pressed("ui_up"):
 		move_player(Vector2i(0,-1))
 	elif event.is_action_pressed("ui_down"):
@@ -191,4 +209,4 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("ui_left"):
 		move_player(Vector2i(-1,0))
 	elif event.is_action_pressed("ui_right"):
-		move_player(Vector2i(1,0))
+		move_player(Vector2i(1,0)) 

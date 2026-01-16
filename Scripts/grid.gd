@@ -3,6 +3,7 @@ extends Node2D
 
 var width : int
 var height : int
+
 @export var alive_tile := 1
 @export var dead_tile := 0
 @export var player_tile:= 2
@@ -10,36 +11,48 @@ var height : int
 @export var start_tile:= 4
 
 @onready var life_layer : TileMapLayer = $LifeLayer
+
+
 @onready var ui := $RoundUi
 @onready var bg := $RoundUi/UIBackground
-
 @onready var round_label := $RoundUi/UIBackground/RoundChangeLabel
-
-
-var player_position: Vector2i
-var is_player_alive:= true
-var roundnum : int = 0
-var going_from_left_to_right: bool = false
-var showing_the_round_num_screen: bool = false
-
-var points := 0
-var in_shop := false
-var shop_itme: powerup_type
+@onready var shop_holder := $RoundUi/UIBackground/ShopInfoHolder
+@onready var powerup_button_1 := $RoundUi/UIBackground/ShopInfoHolder/Powerup1
+@onready var powerup_button_2 := $RoundUi/UIBackground/ShopInfoHolder/Powerup2
+@onready var continue_button := $RoundUi/UIBackground/ShopInfoHolder/Continue
 
 var grid: Array = []
-var owned_powerups: Array[powerup_type] = []
-var extra_move := 0
+var player_position: Vector2i
+var is_player_alive:= true
+var going_from_left_to_right: bool = false
+var showing_the_round_num_screen: bool = false
+var in_shop := false
+
+var roundnum : int = 0
+var points := 0
+
 #trying a new powerup system instead of making like 50 resoucres (cough cough skee ball)
 enum powerup_type {
 	MOVE_2,
 }
-var shop_pool := [
-	powerup_type.MOVE_2,
-]
+const POWERUP_INFO := {
+	powerup_type.MOVE_2: {
+		"name": "Double Step",
+		"description": "First move is free \nLife updates after the second move.",
+		"cost": 1,
+	}
+}
+var owned_powerups: Array[powerup_type] = []
+var extra_move := 0
+var shop_item: Array[powerup_type] = []
+
+
 func _ready():
 	randomize()
-	$RoundUi/UIBackground/ShopInfoHolder/Powerup1.pressed.connect(_on_powerup_1_pressed())
-	$RoundUi/UIBackground/ShopInfoHolder/Continue.pressed.connect(close_shop)
+	
+	powerup_button_1.pressed.connect(func(): buy_powerup(0))
+	powerup_button_2.pressed.connect(func(): buy_powerup(1))
+	continue_button.pressed.connect(close_shop)
 	
 	var viewport_size: Vector2i = get_viewport().get_visible_rect().size
 	@warning_ignore("integer_division")
@@ -47,7 +60,8 @@ func _ready():
 	@warning_ignore("integer_division")
 	height = viewport_size.y / 16
 	
-	$RoundUi/UIBackground/ShopInfoHolder.visible = false
+	shop_holder.visible = false
+	ui.visible = false
 	
 	initialize_grid()
 	@warning_ignore("integer_division")
@@ -69,13 +83,11 @@ func move_player(direction: Vector2i):
 		return
 	
 	var new_pos := player_position + direction
-	
-	if new_pos.x < 0 or new_pos.x >= width:
-		return
-	if new_pos.y < 0 or new_pos.y >= height:
-		return
+	if new_pos.x < 0 or new_pos.x >= width: return
+	if new_pos.y < 0 or new_pos.y >= height: return
 		
 	player_position = new_pos
+	
 	if extra_move > 0:
 		extra_move -= 1
 	else:
@@ -84,7 +96,6 @@ func move_player(direction: Vector2i):
 	if grid[player_position.y][player_position.x]:
 		is_player_alive = false
 		return
-	
 	
 	draw_player()
 
@@ -115,7 +126,7 @@ func advance():
 	points += 1
 	going_from_left_to_right= !going_from_left_to_right
 	
-	if roundnum % 1 == 0:
+	if roundnum % 3 == 0:
 		await open_shop()
 		return
 	
@@ -123,6 +134,7 @@ func advance():
 	round_label.text = "round %d" % roundnum
 	if roundnum != 1:
 		await fade_in()
+	
 	await get_tree().create_timer(1.0).timeout
 	reset_grid()
 	await fade_out()
@@ -226,30 +238,45 @@ func fade_out():
 func open_shop():
 	in_shop = true
 	showing_the_round_num_screen = true
-	shop_itme = shop_pool.pick_random()
-	
-	var label := $RoundUi/UIBackground/ShopInfoHolder/ShopTitle2
-	label.text = powerup_name(shop_itme)
-	
 	round_label.visible = false
-	$RoundUi/UIBackground/ShopInfoHolder.visible = true
+	shop_holder.visible = true
+	
+	shop_item = []
+	while shop_item.size() < 2:
+		var p : powerup_type= POWERUP_INFO.keys().pick_random()
+		shop_item.append(p)
+	
+	update_shop_buttons()
 	await fade_in()
 
-func powerup_name(p: powerup_type) -> String:
-	match p:
-		powerup_type.MOVE_2:
-			return "Double Step\nMove 2 tiles per input"
-	return "Unknown"
+func update_shop_buttons():
+	for i in range(2):
+		var p := shop_item[i]
+		var info : Dictionary= POWERUP_INFO[p]
+		var button := powerup_button_1 if i ==0 else powerup_button_2
+		
+		button.text = "%s\n%s\nCost: %d" % [
+			info.name,
+			info.description,
+			info.cost
+		]
 
-func buy_powerup():
-	if shop_itme in  owned_powerups:
+func buy_powerup(index: int):
+	if index >= shop_item.size():
 		return
 	
-	owned_powerups.append(shop_itme)
-	if shop_itme == powerup_type.MOVE_2:
-		extra_move += 1
+	var p := shop_item[index]
+	var info: Dictionary = POWERUP_INFO[p]
+	var cost: int = info["cost"]
 	
-	close_shop()
+	if points < cost:
+		return
+	
+	points -= cost
+	owned_powerups.append(p)
+	if p == powerup_type.MOVE_2:
+		extra_move += 1
+
 func close_shop():
 	$RoundUi/UIBackground/ShopInfoHolder.visible = false
 	await  fade_out()
@@ -266,8 +293,6 @@ func _input(event: InputEvent) -> void:
 	if showing_the_round_num_screen:
 		return
 	if in_shop:
-		if event.is_action_pressed("ui_accept"):
-			buy_powerup()
 		return
 	
 	if event.is_action_pressed("ui_up"):
@@ -278,10 +303,3 @@ func _input(event: InputEvent) -> void:
 		move_player(Vector2i(-1,0))
 	elif event.is_action_pressed("ui_right"):
 		move_player(Vector2i(1,0)) 
-
-#shop buttons
-
-func _on_powerup_1_pressed():
-	buy_powerup()
-func _on_continue_pressed() -> void:
-	pass # Replace with function body.

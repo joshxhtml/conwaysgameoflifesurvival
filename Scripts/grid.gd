@@ -12,6 +12,7 @@ var height : int
 @onready var life_layer : TileMapLayer = $LifeLayer
 @onready var ui := $RoundUi
 @onready var bg := $RoundUi/UIBackground
+
 @onready var round_label := $RoundUi/UIBackground/RoundChangeLabel
 
 
@@ -23,11 +24,22 @@ var showing_the_round_num_screen: bool = false
 
 var points := 0
 var in_shop := false
+var shop_itme: powerup_type
 
 var grid: Array = []
-
+var owned_powerups: Array[powerup_type] = []
+var extra_move := 0
+#trying a new powerup system instead of making like 50 resoucres (cough cough skee ball)
+enum powerup_type {
+	MOVE_2,
+}
+var shop_pool := [
+	powerup_type.MOVE_2,
+]
 func _ready():
 	randomize()
+	$RoundUi/UIBackground/ShopInfoHolder/Powerup1.pressed.connect(_on_powerup_1_pressed())
+	$RoundUi/UIBackground/ShopInfoHolder/Continue.pressed.connect(close_shop)
 	
 	var viewport_size: Vector2i = get_viewport().get_visible_rect().size
 	@warning_ignore("integer_division")
@@ -37,14 +49,13 @@ func _ready():
 	
 	$RoundUi/UIBackground/ShopInfoHolder.visible = false
 	
-	roundnum = 1
 	initialize_grid()
 	@warning_ignore("integer_division")
 	spawn_player(height/2)
 	draw_said_grid()
 	draw_start_and_goal()
 	draw_player()
-	
+	advance()
 
 #player 
 func spawn_player(y: int):
@@ -63,13 +74,17 @@ func move_player(direction: Vector2i):
 		return
 	if new_pos.y < 0 or new_pos.y >= height:
 		return
-	
+		
 	player_position = new_pos
-	life()
+	if extra_move > 0:
+		extra_move -= 1
+	else:
+		life()
 	
 	if grid[player_position.y][player_position.x]:
 		is_player_alive = false
 		return
+	
 	
 	draw_player()
 
@@ -93,19 +108,21 @@ func draw_said_grid():
 			var title_id : int = alive_tile if grid[y][x] else dead_tile
 			life_layer.set_cell(Vector2i(x,y), title_id, Vector2i.ZERO)
 
+#round changer
 func advance():
 	showing_the_round_num_screen = true
 	roundnum += 1
 	points += 1
 	going_from_left_to_right= !going_from_left_to_right
 	
-	if roundnum % 3 == 0:
+	if roundnum % 1 == 0:
 		await open_shop()
 		return
 	
 	round_label.visible = true
 	round_label.text = "round %d" % roundnum
-	await fade_in()
+	if roundnum != 1:
+		await fade_in()
 	await get_tree().create_timer(1.0).timeout
 	reset_grid()
 	await fade_out()
@@ -205,13 +222,34 @@ func fade_out():
 	
 	ui.visible = false
 
+#shop stuff
 func open_shop():
 	in_shop = true
 	showing_the_round_num_screen = true
+	shop_itme = shop_pool.pick_random()
+	
+	var label := $RoundUi/UIBackground/ShopInfoHolder/ShopTitle2
+	label.text = powerup_name(shop_itme)
+	
 	round_label.visible = false
 	$RoundUi/UIBackground/ShopInfoHolder.visible = true
 	await fade_in()
 
+func powerup_name(p: powerup_type) -> String:
+	match p:
+		powerup_type.MOVE_2:
+			return "Double Step\nMove 2 tiles per input"
+	return "Unknown"
+
+func buy_powerup():
+	if shop_itme in  owned_powerups:
+		return
+	
+	owned_powerups.append(shop_itme)
+	if shop_itme == powerup_type.MOVE_2:
+		extra_move += 1
+	
+	close_shop()
 func close_shop():
 	$RoundUi/UIBackground/ShopInfoHolder.visible = false
 	await  fade_out()
@@ -219,11 +257,17 @@ func close_shop():
 	in_shop = false
 	showing_the_round_num_screen = false
 
+#powerup stuff
+func has_powerup(p: powerup_type) -> bool:
+	return p in owned_powerups
+
 #input stuff, and by stuff i mean one function, godot makes input so easy
 func _input(event: InputEvent) -> void:
 	if showing_the_round_num_screen:
 		return
 	if in_shop:
+		if event.is_action_pressed("ui_accept"):
+			buy_powerup()
 		return
 	
 	if event.is_action_pressed("ui_up"):
@@ -234,3 +278,10 @@ func _input(event: InputEvent) -> void:
 		move_player(Vector2i(-1,0))
 	elif event.is_action_pressed("ui_right"):
 		move_player(Vector2i(1,0)) 
+
+#shop buttons
+
+func _on_powerup_1_pressed():
+	buy_powerup()
+func _on_continue_pressed() -> void:
+	pass # Replace with function body.

@@ -1725,12 +1725,12 @@ tile_set = SubResource("TileSet_j0p8b")
 [node name="RoundUi" type="CanvasLayer" parent="."]
 layer = 10
 
-[node name="ColorRect" type="ColorRect" parent="RoundUi"]
+[node name="UIBackground" type="ColorRect" parent="RoundUi"]
 offset_right = 1152.0
 offset_bottom = 648.0
 color = Color(0, 0, 0, 1)
 
-[node name="Label" type="Label" parent="RoundUi/ColorRect"]
+[node name="RoundChangeLabel" type="Label" parent="RoundUi/UIBackground"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1746,3 +1746,94 @@ grow_vertical = 2
 theme_override_fonts/font = ExtResource("7_4resb")
 theme_override_font_sizes/font_size = 48
 text = "Round: Num"
+
+[node name="ShopInfoHolder" type="Control" parent="RoundUi/UIBackground"]
+anchors_preset = 0
+offset_left = -1.0
+offset_top = 1.0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="Powerup1" type="Button" parent="RoundUi/UIBackground/ShopInfoHolder"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -276.5
+offset_top = -23.5
+offset_right = -185.5
+offset_bottom = 7.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2.5, 2.5)
+theme_override_fonts/font = ExtResource("7_4resb")
+text = "Powerup 1"
+metadata/_edit_use_anchors_ = true
+
+[node name="Powerup2" type="Button" parent="RoundUi/UIBackground/ShopInfoHolder"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 53.5
+offset_top = -23.5
+offset_right = 144.5
+offset_bottom = 7.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2.5, 2.5)
+theme_override_fonts/font = ExtResource("7_4resb")
+text = "Powerup 2"
+
+[node name="Continue" type="Button" parent="RoundUi/UIBackground/ShopInfoHolder"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -83.5
+offset_top = 159.5
+offset_right = 7.5
+offset_bottom = 190.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+theme_override_fonts/font = ExtResource("7_4resb")
+text = "Exit
+"
+metadata/_edit_use_anchors_ = true
+
+[node name="ShopTitle" type="Label" parent="RoundUi/UIBackground/ShopInfoHolder"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 105.0
+offset_right = 20.0
+offset_bottom = 156.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("7_4resb")
+theme_override_font_sizes/font_size = 48
+text = "Shop"
+metadata/_edit_use_anchors_ = true
+
+[node name="ShopTitle2" type="Label" parent="RoundUi/UIBackground/ShopInfoHolder"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.5
+offset_top = 167.0
+offset_right = 89.5
+offset_bottom = 231.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("7_4resb")
+theme_override_font_sizes/font_size = 20
+text = "(every 3 rounds)"
+metadata/_edit_use_anchors_ = true

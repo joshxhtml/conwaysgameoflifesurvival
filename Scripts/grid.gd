@@ -11,8 +11,8 @@ var height : int
 
 @onready var life_layer : TileMapLayer = $LifeLayer
 @onready var ui := $RoundUi
-@onready var bg := $RoundUi/ColorRect
-@onready var round_label := $RoundUi/ColorRect/Label
+@onready var bg := $RoundUi/UIBackground
+@onready var round_label := $RoundUi/UIBackground/RoundChangeLabel
 
 
 var player_position: Vector2i
@@ -21,7 +21,8 @@ var roundnum : int = 0
 var going_from_left_to_right: bool = false
 var showing_the_round_num_screen: bool = false
 
-
+var points := 0
+var in_shop := false
 
 var grid: Array = []
 
@@ -34,13 +35,16 @@ func _ready():
 	@warning_ignore("integer_division")
 	height = viewport_size.y / 16
 	
+	$RoundUi/UIBackground/ShopInfoHolder.visible = false
+	
+	roundnum = 1
 	initialize_grid()
 	@warning_ignore("integer_division")
 	spawn_player(height/2)
 	draw_said_grid()
 	draw_start_and_goal()
 	draw_player()
-	advance()
+	
 
 #player 
 func spawn_player(y: int):
@@ -92,8 +96,14 @@ func draw_said_grid():
 func advance():
 	showing_the_round_num_screen = true
 	roundnum += 1
+	points += 1
 	going_from_left_to_right= !going_from_left_to_right
 	
+	if roundnum % 3 == 0:
+		await open_shop()
+		return
+	
+	round_label.visible = true
 	round_label.text = "round %d" % roundnum
 	await fade_in()
 	await get_tree().create_timer(1.0).timeout
@@ -181,8 +191,6 @@ func cant_grow_cell_checker(x : int) -> bool:
 	return x == get_goal_x() or x == get_start_x()
 
 # ui stuff
-
-
 func fade_in():
 	ui.visible = true
 	bg.modulate.a = 0.0
@@ -197,9 +205,25 @@ func fade_out():
 	
 	ui.visible = false
 
+func open_shop():
+	in_shop = true
+	showing_the_round_num_screen = true
+	round_label.visible = false
+	$RoundUi/UIBackground/ShopInfoHolder.visible = true
+	await fade_in()
+
+func close_shop():
+	$RoundUi/UIBackground/ShopInfoHolder.visible = false
+	await  fade_out()
+	
+	in_shop = false
+	showing_the_round_num_screen = false
+
 #input stuff, and by stuff i mean one function, godot makes input so easy
 func _input(event: InputEvent) -> void:
 	if showing_the_round_num_screen:
+		return
+	if in_shop:
 		return
 	
 	if event.is_action_pressed("ui_up"):

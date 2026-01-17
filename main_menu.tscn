@@ -1773,6 +1773,23 @@ theme_override_font_sizes/font_size = 48
 text = "Play"
 flat = true
 
+[node name="Play2" type="Button" parent="CanvasLayer/UI"]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 402.0
+offset_right = 472.0
+offset_bottom = 474.0
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0.2159017, 0.21590173, 0.2159017, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.4351923, 0.43519226, 0.43519226, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("6_0k4wn")
+theme_override_font_sizes/font_size = 48
+text = "Zen Mode"
+flat = true
+
 [node name="Title" type="Label" parent="CanvasLayer/UI"]
 layout_mode = 0
 offset_left = 3.0
@@ -1788,3 +1805,4 @@ horizontal_alignment = 1
 autowrap_mode = 2
 
 [connection signal="pressed" from="CanvasLayer/UI/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="CanvasLayer/UI/Play2" to="." method="_on_play_2_pressed"]

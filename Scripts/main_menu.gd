@@ -8,6 +8,7 @@ extends Node2D
 @export var cooldown_before_you_get_flashbanged_lmao := 20.0
 @onready var life_layer : TileMapLayer = $LifeLayer
 @onready var flash_of_death: ColorRect = $WhiteFlashOfDeath
+@onready var ui : CanvasLayer = $CanvasLayer
 
 var width: int
 var height : int
@@ -116,3 +117,10 @@ func reset_timer_to_flashbang() -> void:
 
 func _on_play_pressed() -> void:
 	get_tree().change_scene_to_file("res://tutorial.tscn")
+
+func _on_play_2_pressed() -> void:
+	ui.visible = false
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		ui.visible = true

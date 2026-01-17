@@ -38,6 +38,11 @@ var rules := [
 		"title": "Reproduction",
 		"desc" : "A dead cell with exactly 3 neighbors becomes alive.",
 		"setup": Callable(self, "reproduction"),
+	},
+	{
+		"title": "How To Play",
+		"desc" : "W/A/S/D or Arrow Keys to move\n Move from one side of the board to the other\n Every 3 rounds a Shop opens to buy Boosts",
+		"setup": null,
 	}
 ]
 func _ready() -> void:
@@ -74,10 +79,13 @@ func play_rule():
 	
 	while replaying:
 		clear_gird()
-		rule["setup"].call()
+		if rule["setup"] != null:
+			rule["setup"].call()
 		draw_grid()
+		fade_in()
 		await get_tree().create_timer(2.0).timeout
 		life()
+		fade_in()
 		await get_tree().create_timer(1.0).timeout
 		
 		trans = false
@@ -135,6 +143,10 @@ func reproduction():
 	grid[2][3] = true
 	grid[3][4] = true
 
+func fade_in():
+	demogrid.modulate.a = 0.0
+	var tween := create_tween()
+	tween.tween_property(demogrid, "modulate:a", 1.0, 0.15)
 
 func _on_skip_pressed() -> void:
 	get_tree().change_scene_to_file("res://main_grid.tscn")
@@ -144,6 +156,8 @@ func _on_next_pressed() -> void:
 		return
 	replaying = false
 	current_rule += 1
+	if current_rule >= (rules.size() - 1):
+		next_button.text = "Play"
 	if current_rule >= rules.size():
 		get_tree().change_scene_to_file("res://main_grid.tscn")
 		return

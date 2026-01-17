@@ -1722,13 +1722,6 @@ script = ExtResource("1_h75lf")
 [node name="LifeLayer" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_j0p8b")
 
-[node name="ProbablyABetterWayToDoThis" type="ColorRect" parent="."]
-offset_right = 1152.0
-offset_bottom = 648.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-color = Color(0, 0, 0, 1)
-
 [node name="TimerHolder" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -1750,6 +1743,13 @@ offset_bottom = 34.0
 theme_override_fonts/font = ExtResource("7_4resb")
 theme_override_font_sizes/font_size = 30
 text = "\"Time: %.2fs   x%.1f"
+
+[node name="ProbablyABetterWayToDoThis" type="ColorRect" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0, 0, 0, 1)
 
 [node name="RoundUi" type="CanvasLayer" parent="."]
 layer = 10

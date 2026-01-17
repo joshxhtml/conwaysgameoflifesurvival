@@ -3,10 +3,11 @@ extends Node2D
 @export var alive_tile := 1
 @export var dead_tile :=  0
 
+
 const width := 7
 const height := 7
 
-@onready var demogrid: TileMapLayer = $ColorRect/LifeLayer
+@onready var demogrid: TileMapLayer = $ColorRect/CenterContainer/LifeLayer
 @onready var tile_label: Label = $ColorRect/RuleLabel
 @onready var desc_label: RichTextLabel = $ColorRect/Description
 @onready var next_button: Button = $ColorRect/Next
@@ -15,6 +16,7 @@ const height := 7
 var grid:= []
 var current_rule := 0 
 var trans := false
+var replaying := false
 
 var rules := [
 	{
@@ -39,6 +41,7 @@ var rules := [
 	}
 ]
 func _ready() -> void:
+	demogrid.scale = Vector2(2, 2)
 	clear_gird()
 	play_rule()
 
@@ -62,19 +65,23 @@ func clear_gird():
 		grid.append(row)
 
 func play_rule():
+	replaying = true
 	trans = true
-	clear_gird()
 	
 	var rule = rules[current_rule]
 	tile_label.text = rule["title"]
-	desc_label.text = "[center]%s[/center]" % rule["desc"]
+	desc_label.text = rule["desc"]
 	
-	rule["setup"].call()
-	draw_grid()
-	
-	await get_tree().create_timer(1.0).timeout
-	life()
-	trans = false
+	while replaying:
+		clear_gird()
+		rule["setup"].call()
+		draw_grid()
+		await get_tree().create_timer(2.0).timeout
+		life()
+		await get_tree().create_timer(1.0).timeout
+		
+		trans = false
+
 func life():
 	var new_grid := []
 
@@ -110,6 +117,7 @@ func count_neighbors(x: int, y: int) -> int:
 func underpopulation():
 	clear_gird()
 	grid[3][3] = true
+	grid[3][2] = true
 func survival():
 	clear_gird()
 	grid[3][3] = true
@@ -118,15 +126,14 @@ func survival():
 func overpopulation():
 	clear_gird()
 	grid[3][3] = true
-	for dx in [-1,0,1]:
-		for dy in [-1,1]:
-			grid[3 +dy][3+dx] = true
+	grid[3][4] = true
+	grid[2][3] = true
+	grid[4][3] = true
 func reproduction():
 	clear_gird()
-	grid[2][3] = true
 	grid[3][2] = true
+	grid[2][3] = true
 	grid[3][4] = true
-
 
 
 func _on_skip_pressed() -> void:
@@ -135,7 +142,7 @@ func _on_skip_pressed() -> void:
 func _on_next_pressed() -> void:
 	if trans:
 		return
-	
+	replaying = false
 	current_rule += 1
 	if current_rule >= rules.size():
 		get_tree().change_scene_to_file("res://main_grid.tscn")

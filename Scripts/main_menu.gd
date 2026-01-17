@@ -115,4 +115,4 @@ func reset_timer_to_flashbang() -> void:
 	flash = true
 
 func _on_play_pressed() -> void:
-	get_tree().change_scene_to_file("res://main_grid.tscn")
+	get_tree().change_scene_to_file("res://tutorial.tscn")

@@ -22,6 +22,7 @@ var height : int
 @onready var continue_button := $RoundUi/UIBackground/ShopInfoHolder/Continue
 @onready var powerup_button_1_label : RichTextLabel = powerup_button_1.get_node("RichTextLabel") 
 @onready var powerup_button_2_label : RichTextLabel = powerup_button_2.get_node("RichTextLabel")
+@onready var i_may_be_stupid:= $ProbablyABetterWayToDoThis
 
 var grid: Array = []
 var player_position: Vector2i
@@ -50,6 +51,7 @@ var shop_item: Array[powerup_type] = []
 
 
 func _ready():
+	i_may_be_stupid.visible = true
 	randomize()
 	
 	powerup_button_1.pressed.connect(func(): buy_powerup(0))
@@ -71,6 +73,7 @@ func _ready():
 	draw_said_grid()
 	draw_start_and_goal()
 	draw_player()
+	
 	advance()
 
 #player 
@@ -128,14 +131,15 @@ func advance():
 	points += 1
 	going_from_left_to_right= !going_from_left_to_right
 	
-	if roundnum % 1 == 0:
+	if roundnum % 3 == 0:
 		await open_shop()
 		return
 	
 	round_label.visible = true
 	round_label.text = "round %d" % roundnum
 	await fade_in()
-	
+	if roundnum == 1:
+		i_may_be_stupid.visible = false
 	await get_tree().create_timer(1.0).timeout
 	reset_grid()
 	await fade_out()
@@ -259,20 +263,17 @@ func update_shop_buttons():
 		label.clear()
 		
 		label.append_text(
-	(
-		"[center]"
-		+ "[font_size=10][b]%s[/b][/font_size]\n"
-		+ "[font_size=6]%s[/font_size]\n\n"
-		+ "[color=%s][font_size=7]Cost: %d[/font_size][/color]"
-		+ "[/center]"
-	)
-	% [
-		info["name"],
-		info["description"],
-		color,
-		info["cost"]
-	]
-)
+			("[center]"
+			+ "[font_size=10][b]%s[/b][/font_size]\n"
+			+ "[font_size=6]%s[/font_size]\n\n"
+			+ "[color=%s][font_size=7]Cost: %d[/font_size][/color]"
+			+ "[/center]")
+		% [
+			info["name"],
+			info["description"],
+			color,
+			info["cost"]
+		])
 func buy_powerup(index: int):
 	if index >= shop_item.size():
 		return

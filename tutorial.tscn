@@ -1,16 +1,16 @@
-[gd_scene load_steps=14 format=3 uid="uid://dr4v8unt3bsao"]
+[gd_scene load_steps=14 format=3 uid="uid://dyopvkacr3uf1"]
 
-[ext_resource type="Script" uid="uid://dmqejjqx7l8yx" path="res://Scripts/grid.gd" id="1_h75lf"]
-[ext_resource type="Texture2D" uid="uid://eaw0ruupoe7v" path="res://assets/Black.png" id="2_h8f2a"]
-[ext_resource type="Texture2D" uid="uid://bnagpikttjl4q" path="res://assets/white.png" id="3_ltoae"]
-[ext_resource type="Texture2D" uid="uid://cfdjff8olegu5" path="res://assets/yellow.png" id="4_h8f2a"]
-[ext_resource type="Texture2D" uid="uid://b43nhwy6y13ix" path="res://assets/green.png" id="5_0m6n6"]
-[ext_resource type="Texture2D" uid="uid://g1wsikgj26oy" path="res://assets/red.png" id="6_4resb"]
-[ext_resource type="FontFile" uid="uid://bxvgywe50qf8l" path="res://assets/determination.ttf" id="7_4resb"]
+[ext_resource type="Script" uid="uid://ddid1upaxn2b5" path="res://Scripts/tutorial.gd" id="1_0cr88"]
+[ext_resource type="FontFile" uid="uid://bxvgywe50qf8l" path="res://assets/determination.ttf" id="2_4t6hg"]
+[ext_resource type="Texture2D" uid="uid://eaw0ruupoe7v" path="res://assets/Black.png" id="3_7vrqn"]
+[ext_resource type="Texture2D" uid="uid://bnagpikttjl4q" path="res://assets/white.png" id="4_bhfnd"]
+[ext_resource type="Texture2D" uid="uid://cfdjff8olegu5" path="res://assets/yellow.png" id="5_tvjhf"]
+[ext_resource type="Texture2D" uid="uid://b43nhwy6y13ix" path="res://assets/green.png" id="6_vmw6g"]
+[ext_resource type="Texture2D" uid="uid://g1wsikgj26oy" path="res://assets/red.png" id="7_4hjyh"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4resb"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bsk3x"]
 resource_name = "dead tile"
-texture = ExtResource("2_h8f2a")
+texture = ExtResource("3_7vrqn")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -1036,9 +1036,9 @@ texture = ExtResource("2_h8f2a")
 30:31/0 = 0
 31:31/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_j0p8b"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dl7dh"]
 resource_name = "alive tile"
-texture = ExtResource("3_ltoae")
+texture = ExtResource("4_bhfnd")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -1184,9 +1184,9 @@ texture = ExtResource("3_ltoae")
 10:11/0 = 0
 11:11/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3b24r"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r4o0u"]
 resource_name = "player"
-texture = ExtResource("4_h8f2a")
+texture = ExtResource("5_tvjhf")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -1332,9 +1332,9 @@ texture = ExtResource("4_h8f2a")
 10:11/0 = 0
 11:11/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_v0lp2"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k08xv"]
 resource_name = "Goal"
-texture = ExtResource("5_0m6n6")
+texture = ExtResource("6_vmw6g")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -1480,9 +1480,9 @@ texture = ExtResource("5_0m6n6")
 10:11/0 = 0
 11:11/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6hsv2"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_g52lx"]
 resource_name = "Start"
-texture = ExtResource("6_4resb")
+texture = ExtResource("7_4hjyh")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -1709,180 +1709,95 @@ texture = ExtResource("6_4resb")
 13:14/0 = 0
 14:14/0 = 0
 
-[sub_resource type="TileSet" id="TileSet_j0p8b"]
-sources/0 = SubResource("TileSetAtlasSource_4resb")
-sources/1 = SubResource("TileSetAtlasSource_j0p8b")
-sources/2 = SubResource("TileSetAtlasSource_3b24r")
-sources/3 = SubResource("TileSetAtlasSource_v0lp2")
-sources/4 = SubResource("TileSetAtlasSource_6hsv2")
+[sub_resource type="TileSet" id="TileSet_0lped"]
+sources/0 = SubResource("TileSetAtlasSource_bsk3x")
+sources/1 = SubResource("TileSetAtlasSource_dl7dh")
+sources/2 = SubResource("TileSetAtlasSource_r4o0u")
+sources/3 = SubResource("TileSetAtlasSource_k08xv")
+sources/4 = SubResource("TileSetAtlasSource_g52lx")
 
-[node name="MainGrid" type="Node2D"]
-script = ExtResource("1_h75lf")
+[node name="tutorial" type="Node2D"]
+script = ExtResource("1_0cr88")
 
-[node name="LifeLayer" type="TileMapLayer" parent="."]
-tile_set = SubResource("TileSet_j0p8b")
-
-[node name="ProbablyABetterWayToDoThis" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="."]
 offset_right = 1152.0
 offset_bottom = 648.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(0, 0, 0, 1)
 
-[node name="TimerHolder" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 952.0
-offset_right = 1152.0
-offset_bottom = 59.0
-
-[node name="TimerBox" type="ColorRect" parent="TimerHolder"]
-layout_mode = 0
-offset_left = -113.0
-offset_right = 200.0
-offset_bottom = 60.0
-color = Color(0.310617, 0.31061715, 0.31061706, 0.60784316)
-
-[node name="TImer" type="Label" parent="TimerHolder/TimerBox"]
-layout_mode = 0
-offset_right = 200.0
-offset_bottom = 34.0
-theme_override_fonts/font = ExtResource("7_4resb")
-theme_override_font_sizes/font_size = 30
-text = "\"Time: %.2fs   x%.1f"
-
-[node name="RoundUi" type="CanvasLayer" parent="."]
-layer = 10
-follow_viewport_enabled = true
-
-[node name="UIBackground" type="ColorRect" parent="RoundUi"]
-offset_right = 1152.0
-offset_bottom = 648.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-color = Color(0, 0, 0, 1)
-
-[node name="RoundChangeLabel" type="Label" parent="RoundUi/UIBackground"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("7_4resb")
-theme_override_font_sizes/font_size = 48
-text = "Round: Num"
-
-[node name="ShopInfoHolder" type="Control" parent="RoundUi/UIBackground"]
-anchors_preset = 0
-offset_left = -1.0
-offset_top = 1.0
-offset_right = 1152.0
-offset_bottom = 648.0
-
-[node name="Powerup1" type="Button" parent="RoundUi/UIBackground/ShopInfoHolder"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -276.5
-offset_top = 71.5
-offset_right = -185.5
-offset_bottom = 99.5
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(2.5, 2.5)
-theme_override_fonts/font = ExtResource("7_4resb")
-text = "Buy"
-
-[node name="RichTextLabel" type="RichTextLabel" parent="RoundUi/UIBackground/ShopInfoHolder/Powerup1"]
-layout_mode = 0
-offset_left = -18.799995
-offset_top = -75.6
-offset_right = 105.59999
-offset_bottom = -3.2000046
-
-[node name="Powerup2" type="Button" parent="RoundUi/UIBackground/ShopInfoHolder"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 53.5
-offset_top = 68.5
-offset_right = 144.5
-offset_bottom = 97.70001
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(2.5, 2.5)
-theme_override_fonts/font = ExtResource("7_4resb")
-text = "Buy"
-
-[node name="RichTextLabel" type="RichTextLabel" parent="RoundUi/UIBackground/ShopInfoHolder/Powerup2"]
-layout_mode = 0
-offset_left = -16.40001
-offset_top = -75.84
-offset_right = 107.999985
-offset_bottom = -3.44001
-
-[node name="Continue" type="Button" parent="RoundUi/UIBackground/ShopInfoHolder"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -83.5
-offset_top = 159.5
-offset_right = 7.5
-offset_bottom = 190.5
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(2, 2)
-theme_override_fonts/font = ExtResource("7_4resb")
-text = "Exit
-"
-metadata/_edit_use_anchors_ = true
-
-[node name="ShopTitle" type="Label" parent="RoundUi/UIBackground/ShopInfoHolder"]
+[node name="RuleLabel" type="Label" parent="ColorRect"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -20.0
-offset_top = 105.0
-offset_right = 20.0
-offset_bottom = 156.0
+offset_left = -245.0
+offset_right = 249.0
+offset_bottom = 140.0
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("7_4resb")
-theme_override_font_sizes/font_size = 48
-text = "Shop | Balance: "
-metadata/_edit_use_anchors_ = true
+theme_override_fonts/font = ExtResource("2_4t6hg")
+theme_override_font_sizes/font_size = 32
+text = "rule label thing"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
-[node name="ShopTitle2" type="Label" parent="RoundUi/UIBackground/ShopInfoHolder"]
+[node name="LifeLayer" type="TileMapLayer" parent="ColorRect"]
+tile_set = SubResource("TileSet_0lped")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="ColorRect"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -80.5
-offset_top = 167.0
-offset_right = 89.5
-offset_bottom = 231.0
+offset_left = -133.0
+offset_top = 103.0
+offset_right = 138.0
+offset_bottom = 185.0
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("7_4resb")
-theme_override_font_sizes/font_size = 20
-text = "(shop appears every 3 rounds)"
-metadata/_edit_use_anchors_ = true
+theme_override_fonts/normal_font = ExtResource("2_4t6hg")
+theme_override_font_sizes/normal_font_size = 20
+text = "placeholder"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[connection signal="pressed" from="RoundUi/UIBackground/ShopInfoHolder/Powerup1" to="." method="_on_powerup_1_pressed"]
-[connection signal="pressed" from="RoundUi/UIBackground/ShopInfoHolder/Powerup2" to="." method="_on_powerup_1_pressed"]
-[connection signal="pressed" from="RoundUi/UIBackground/ShopInfoHolder/Continue" to="." method="_on_continue_pressed"]
+[node name="Skip" type="Button" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -84.0
+offset_right = 315.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0.2159017, 0.21590173, 0.2159017, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.4351923, 0.43519226, 0.43519226, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("2_4t6hg")
+theme_override_font_sizes/font_size = 48
+text = "Skip "
+flat = true
+
+[node name="Skip2" type="Button" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -306.0
+offset_top = -84.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0.2159017, 0.21590173, 0.2159017, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.4351923, 0.43519226, 0.43519226, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("2_4t6hg")
+theme_override_font_sizes/font_size = 48
+text = "Next"
+flat = true

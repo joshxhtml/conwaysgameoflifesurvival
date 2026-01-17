@@ -24,6 +24,9 @@ var height : int
 @onready var powerup_button_2_label : RichTextLabel = powerup_button_2.get_node("RichTextLabel")
 @onready var i_may_be_stupid:= $ProbablyABetterWayToDoThis
 @onready var timer : Label= $TimerHolder/TimerBox/TImer
+@onready var balance := $RoundUi/UIBackground/ShopInfoHolder/ShopTitle
+
+
 
 var grid: Array = []
 var player_position: Vector2i
@@ -326,6 +329,7 @@ func open_shop():
 	in_shop = true
 	showing_the_round_num_screen = true
 	round_label.visible = false
+	balance.text = "Shop | Balance: %d" % points
 	shop_holder.visible = true
 	
 	shop_item.clear()
@@ -368,6 +372,7 @@ func buy_powerup(index: int):
 		return
 	
 	points -= cost
+	balance.text = "Shop | Balance: %d" % points
 	owned_powerups.append(p)
 	
 	if p == powerup_type.MOVE_2:
@@ -413,8 +418,9 @@ func dash_cancel():
 
 #timer stuff
 func calculate_multiplier():
-	multiplier = clamp(6.0 / max(round_time, 1.0), 1.0, 3.0)
-
+	var t := inverse_lerp(15.0, 35.0, round_time)
+	multiplier = lerp(3,1,t)
+	multiplier = clamp(multiplier,1,3)
 
 func update_timer():
 	timer.text = "Time: %.2fs   x%.1f" % [round_time, multiplier]
@@ -422,6 +428,8 @@ func update_timer():
 
 
 #input stuff, and by stuff i mean one function, godot makes input so easy
+
+
 func _input(event: InputEvent) -> void:
 	if showing_the_round_num_screen:
 		return

@@ -1756,11 +1756,11 @@ offset_bottom = 648.0
 
 [node name="Powerup1" type="Button" parent="RoundUi/UIBackground/ShopInfoHolder"]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = -1
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 0.6468315
 anchor_right = 0.5
-anchor_bottom = 0.5
+anchor_bottom = 0.64219475
 offset_left = -276.5
 offset_top = -23.5
 offset_right = -185.5
@@ -1769,8 +1769,14 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(2.5, 2.5)
 theme_override_fonts/font = ExtResource("7_4resb")
-text = "Powerup 1"
+text = "Buy"
 metadata/_edit_use_anchors_ = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="RoundUi/UIBackground/ShopInfoHolder/Powerup1"]
+layout_mode = 0
+offset_top = -74.0
+offset_right = 90.8
+offset_bottom = -8.0
 
 [node name="Powerup2" type="Button" parent="RoundUi/UIBackground/ShopInfoHolder"]
 layout_mode = 1
@@ -1780,14 +1786,20 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = 53.5
-offset_top = -23.5
+offset_top = 68.5
 offset_right = 144.5
-offset_bottom = 7.5
+offset_bottom = 97.70001
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(2.5, 2.5)
 theme_override_fonts/font = ExtResource("7_4resb")
-text = "Powerup 2"
+text = "Buy"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="RoundUi/UIBackground/ShopInfoHolder/Powerup2"]
+layout_mode = 0
+offset_top = -72.64
+offset_right = 90.39998
+offset_bottom = -4.6399994
 
 [node name="Continue" type="Button" parent="RoundUi/UIBackground/ShopInfoHolder"]
 layout_mode = 1

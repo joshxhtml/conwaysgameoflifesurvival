@@ -37,18 +37,60 @@ var points := 0
 #trying a new powerup system instead of making like 50 resoucres (cough cough skee ball)
 enum powerup_type {
 	MOVE_2,
+	PHASE_WALK,
+	DIAGONAL,
+	BLINK,
+	DASH_CANCEL,
+	WALL_RIDE,
+	MOMENTUM,
 }
 const POWERUP_INFO := {
 	powerup_type.MOVE_2: {
 		"name": "Double Step",
-		"description": "First move is free. Life updates after the second move.",
+		"description": "First move is free. Life updates after the second move. (Stacks)",
 		"cost": 1,
-	}
+	},
+	powerup_type.PHASE_WALK: {
+		"name": "Phase Walk",
+		"description": "You can move through alive cells once per round.",
+		"cost": 3,
+	},
+	powerup_type.DIAGONAL: {
+		"name": "Diagonal",
+		"description": "Allows diagonal movement.",
+		"cost": 5,
+	},
+	powerup_type.BLINK: {
+		"name": "Blink",
+		"description": "Teleport 2 tiles in a straight line (skips Life update).",
+		"cost": 5,
+	},
+	powerup_type.DASH_CANCEL: {
+		"name": "Dash Cancel",
+		"description": "You may undo your last move once per round.",
+		"cost": 5,
+	},
+	powerup_type.WALL_RIDE: {
+		"name": "Wall Ride",
+		"description": "Moving along the start or goal column doesn’t trigger Life.",
+		"cost": 5,
+	},
+	powerup_type.MOMENTUM: {
+		"name": "Momentum",
+		"description": "Moving in the same direction twice gives a free third move.",
+		"cost": 15,
+	},
 }
 var owned_powerups: Array[powerup_type] = []
 var extra_move := 0
 var shop_item: Array[powerup_type] = []
 
+# powerup varibles
+var phase_walked_used := false
+var dash_cancel_used := false
+var last_position : Vector2i
+var last_direction : Vector2i
+var momentum_checker := 0
 
 func _ready():
 	i_may_be_stupid.visible = true
@@ -81,6 +123,7 @@ func spawn_player(y: int):
 	player_position = Vector2i(get_start_x(), y)
 
 func move_player(direction: Vector2i):
+	last_position = player_position
 	if not is_player_alive:
 		return
 	if player_position.x == get_goal_x():
@@ -93,16 +136,32 @@ func move_player(direction: Vector2i):
 		
 	player_position = new_pos
 	
+	var wall := ( has_powerup(powerup_type.WALL_RIDE) and (player_position.x == get_start_x() or player_position.x == get_goal_x()))
+	
+	if direction == last_direction:
+		momentum_checker += 1
+	else:
+		momentum_checker = 1
+	
+	if momentum_checker == 3:
+		momentum_checker = 0
+		return
+	
+	last_direction = direction
+	
 	if extra_move > 0:
 		extra_move -= 1
-	else:
+	elif not wall:
 		life()
 	
 	if grid[player_position.y][player_position.x]:
-		is_player_alive = false
-		Global.roundnum_global_ver = roundnum
-		get_tree().change_scene_to_file("res://game_over.tscn")
-		return
+		if has_powerup(powerup_type.PHASE_WALK) and not phase_walked_used:
+			phase_walked_used = true
+		else:
+			is_player_alive = false
+			Global.roundnum_global_ver = roundnum
+			get_tree().change_scene_to_file("res://game_over.tscn")
+			return
 	
 	draw_player()
 
@@ -132,6 +191,10 @@ func advance():
 	roundnum += 1
 	points += 1
 	going_from_left_to_right= !going_from_left_to_right
+	
+	phase_walked_used = false
+	dash_cancel_used = false
+	momentum_checker = 0
 	
 	if roundnum % 3 == 0:
 		await open_shop()
@@ -307,6 +370,30 @@ func close_shop():
 func has_powerup(p: powerup_type) -> bool:
 	return p in owned_powerups
 
+func blink(dir: Vector2i):
+	if not has_powerup(powerup_type.BLINK):
+		return
+	
+	var tar := player_position + dir * 2
+	if tar.x < 0 or tar.x >= width: 
+		return
+	if tar.y < 0 or tar.y >= height: 
+		return
+	
+	last_position = player_position
+	player_position = tar
+	draw_player()
+
+func dash_cancel():
+	if not has_powerup(powerup_type.DASH_CANCEL):
+		return
+	if dash_cancel_used:
+		return
+	
+	player_position = last_position
+	dash_cancel_used = true
+	draw_player()
+
 #input stuff, and by stuff i mean one function, godot makes input so easy
 func _input(event: InputEvent) -> void:
 	if showing_the_round_num_screen:
@@ -314,7 +401,12 @@ func _input(event: InputEvent) -> void:
 	if in_shop:
 		return
 	
-	if event.is_action_pressed("ui_up"):
+	if has_powerup(powerup_type.DIAGONAL) and (event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down")):
+		if event.is_action_pressed("ui_up"):
+			move_player(Vector2i(1,-1))
+		elif event.is_action_pressed("ui_down"):
+			move_player(Vector2i(1,1))
+	elif event.is_action_pressed("ui_up"):
 		move_player(Vector2i(0,-1))
 	elif event.is_action_pressed("ui_down"):
 		move_player(Vector2i(0,1))
@@ -322,3 +414,8 @@ func _input(event: InputEvent) -> void:
 		move_player(Vector2i(-1,0))
 	elif event.is_action_pressed("ui_right"):
 		move_player(Vector2i(1,0)) 
+	elif event.is_action_pressed("ui_accept"):
+		blink(last_direction)
+	elif event.is_action_pressed("ui_cancel"):
+		dash_cancel()
+		

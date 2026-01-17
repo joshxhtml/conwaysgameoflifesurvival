@@ -20,6 +20,8 @@ var height : int
 @onready var powerup_button_1 := $RoundUi/UIBackground/ShopInfoHolder/Powerup1
 @onready var powerup_button_2 := $RoundUi/UIBackground/ShopInfoHolder/Powerup2
 @onready var continue_button := $RoundUi/UIBackground/ShopInfoHolder/Continue
+@onready var powerup_button_1_label : RichTextLabel = powerup_button_1.get_node("RichTextLabel") 
+@onready var powerup_button_2_label : RichTextLabel = powerup_button_2.get_node("RichTextLabel")
 
 var grid: Array = []
 var player_position: Vector2i
@@ -38,7 +40,7 @@ enum powerup_type {
 const POWERUP_INFO := {
 	powerup_type.MOVE_2: {
 		"name": "Double Step",
-		"description": "First move is free \nLife updates after the second move.",
+		"description": "First move is free. Life updates after the second move.",
 		"cost": 1,
 	}
 }
@@ -126,20 +128,19 @@ func advance():
 	points += 1
 	going_from_left_to_right= !going_from_left_to_right
 	
-	if roundnum % 3 == 0:
+	if roundnum % 1 == 0:
 		await open_shop()
 		return
 	
 	round_label.visible = true
 	round_label.text = "round %d" % roundnum
-	if roundnum != 1:
-		await fade_in()
+	await fade_in()
 	
 	await get_tree().create_timer(1.0).timeout
 	reset_grid()
 	await fade_out()
 	
-	ui.visible = false
+	#ui.visible = false
 	showing_the_round_num_screen = false
 
 #grid things
@@ -241,7 +242,7 @@ func open_shop():
 	round_label.visible = false
 	shop_holder.visible = true
 	
-	shop_item = []
+	shop_item.clear()
 	while shop_item.size() < 2:
 		var p : powerup_type= POWERUP_INFO.keys().pick_random()
 		shop_item.append(p)
@@ -253,14 +254,25 @@ func update_shop_buttons():
 	for i in range(2):
 		var p := shop_item[i]
 		var info : Dictionary= POWERUP_INFO[p]
-		var button := powerup_button_1 if i ==0 else powerup_button_2
+		var label : RichTextLabel = (powerup_button_1_label if i ==1 else powerup_button_2_label)
+		var color:= "yellow" if points > info["cost"] else "red"
+		label.clear()
 		
-		button.text = "%s\n%s\nCost: %d" % [
-			info.name,
-			info.description,
-			info.cost
-		]
-
+		label.append_text(
+	(
+		"[center]"
+		+ "[font_size=10][b]%s[/b][/font_size]\n"
+		+ "[font_size=6]%s[/font_size]\n\n"
+		+ "[color=%s][font_size=7]Cost: %d[/font_size][/color]"
+		+ "[/center]"
+	)
+	% [
+		info["name"],
+		info["description"],
+		color,
+		info["cost"]
+	]
+)
 func buy_powerup(index: int):
 	if index >= shop_item.size():
 		return
@@ -274,15 +286,19 @@ func buy_powerup(index: int):
 	
 	points -= cost
 	owned_powerups.append(p)
+	
 	if p == powerup_type.MOVE_2:
 		extra_move += 1
+		
+	update_shop_buttons()
 
 func close_shop():
-	$RoundUi/UIBackground/ShopInfoHolder.visible = false
-	await  fade_out()
-	
 	in_shop = false
 	showing_the_round_num_screen = false
+	shop_holder.visible = false
+	
+	reset_grid()
+	await fade_out()
 
 #powerup stuff
 func has_powerup(p: powerup_type) -> bool:

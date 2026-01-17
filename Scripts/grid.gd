@@ -23,6 +23,7 @@ var height : int
 @onready var powerup_button_1_label : RichTextLabel = powerup_button_1.get_node("RichTextLabel") 
 @onready var powerup_button_2_label : RichTextLabel = powerup_button_2.get_node("RichTextLabel")
 @onready var i_may_be_stupid:= $ProbablyABetterWayToDoThis
+@onready var timer : Label= $TimerHolder/TimerBox/TImer
 
 var grid: Array = []
 var player_position: Vector2i
@@ -91,6 +92,10 @@ var dash_cancel_used := false
 var last_position : Vector2i
 var last_direction : Vector2i
 var momentum_checker := 0
+#timer stuff
+var round_time := 0.0
+var timer_runing := false
+var multiplier := 1.0
 
 func _ready():
 	i_may_be_stupid.visible = true
@@ -118,6 +123,11 @@ func _ready():
 	
 	advance()
 
+func _process(delta: float) -> void:
+	if timer_runing:
+		round_time += delta
+		calculate_multiplier()
+		update_timer()
 #player 
 func spawn_player(y: int):
 	player_position = Vector2i(get_start_x(), y)
@@ -152,6 +162,8 @@ func move_player(direction: Vector2i):
 	if extra_move > 0:
 		extra_move -= 1
 	elif not wall:
+		if roundnum % 4 == 0:
+			life()
 		life()
 	
 	if grid[player_position.y][player_position.x]:
@@ -187,9 +199,10 @@ func draw_said_grid():
 
 #round changer
 func advance():
+	timer_runing = false
 	showing_the_round_num_screen = true
 	roundnum += 1
-	points += 1
+	points += int(1 * multiplier)
 	going_from_left_to_right= !going_from_left_to_right
 	
 	phase_walked_used = false
@@ -217,9 +230,12 @@ func reset_grid():
 	initialize_grid()
 	draw_said_grid()
 	draw_start_and_goal()
-	
+	round_time = 0.0
+	timer_runing = true
+	update_timer()
 	player_position = Vector2i(get_start_x(), player_position.y)
 	draw_player()
+	
 
 func initialize_grid():
 	grid.clear()
@@ -306,6 +322,7 @@ func fade_out():
 
 #shop stuff
 func open_shop():
+	timer_runing = false
 	in_shop = true
 	showing_the_round_num_screen = true
 	round_label.visible = false
@@ -362,7 +379,7 @@ func close_shop():
 	in_shop = false
 	showing_the_round_num_screen = false
 	shop_holder.visible = false
-	
+	timer_runing = true
 	reset_grid()
 	await fade_out()
 
@@ -393,6 +410,16 @@ func dash_cancel():
 	player_position = last_position
 	dash_cancel_used = true
 	draw_player()
+
+#timer stuff
+func calculate_multiplier():
+	multiplier = clamp(6.0 / max(round_time, 1.0), 1.0, 3.0)
+
+
+func update_timer():
+	timer.text = "Time: %.2fs   x%.1f" % [round_time, multiplier]
+	timer.modulate = Color.YELLOW.lerp(Color.RED, (multiplier - 1) / 2)
+
 
 #input stuff, and by stuff i mean one function, godot makes input so easy
 func _input(event: InputEvent) -> void:

@@ -1729,8 +1729,31 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(0, 0, 0, 1)
 
+[node name="TimerHolder" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 952.0
+offset_right = 1152.0
+offset_bottom = 59.0
+
+[node name="TimerBox" type="ColorRect" parent="TimerHolder"]
+layout_mode = 0
+offset_left = -113.0
+offset_right = 200.0
+offset_bottom = 60.0
+color = Color(0.310617, 0.31061715, 0.31061706, 0.60784316)
+
+[node name="TImer" type="Label" parent="TimerHolder/TimerBox"]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 34.0
+theme_override_fonts/font = ExtResource("7_4resb")
+theme_override_font_sizes/font_size = 30
+text = "\"Time: %.2fs   x%.1f"
+
 [node name="RoundUi" type="CanvasLayer" parent="."]
 layer = 10
+visible = false
 
 [node name="UIBackground" type="ColorRect" parent="RoundUi"]
 offset_right = 1152.0

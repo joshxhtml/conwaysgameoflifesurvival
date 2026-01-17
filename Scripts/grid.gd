@@ -62,7 +62,7 @@ func _ready():
 	@warning_ignore("integer_division")
 	width = viewport_size.x /16
 	@warning_ignore("integer_division")
-	height = viewport_size.y / 16
+	height = (viewport_size.y / 16) + 3
 	
 	shop_holder.visible = false
 	ui.visible = false
@@ -100,6 +100,8 @@ func move_player(direction: Vector2i):
 	
 	if grid[player_position.y][player_position.x]:
 		is_player_alive = false
+		Global.roundnum_global_ver = roundnum
+		get_tree().change_scene_to_file("res://game_over.tscn")
 		return
 	
 	draw_player()

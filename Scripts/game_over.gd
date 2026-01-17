@@ -1,6 +1,6 @@
 extends Node2D
 #there goes fitting it all in one script
-#i have a sense of deja vu
+#i have a sense of deja vu again
 @export var alive_tile := 1
 @export var dead_tile := 0
 @export var cell_size := 16
@@ -9,12 +9,15 @@ extends Node2D
 @onready var life_layer : TileMapLayer = $LifeLayer
 @onready var flash_of_death: ColorRect = $WhiteFlashOfDeath
 
+@onready var score := $CanvasLayer/UI/Score
+
 var width: int
 var height : int
 var grid: Array = []
 var flash := true
 
 func _ready() -> void:
+	score.text = "You Reached Round %d" % Global.roundnum_global_ver
 	randomize()
 	var viewport_size: Vector2i = get_viewport().get_visible_rect().size
 	@warning_ignore("integer_division")
@@ -27,6 +30,17 @@ func _ready() -> void:
 	draw_said_grid()
 	_run_life_loop_forever_and_ever()
 
+func _on_play_again_pressed() -> void:
+	Global.reset()
+	get_tree().change_scene_to_file("res://main_grid.tscn")
+
+
+func _on_exit_pressed() -> void:
+	Global.reset()
+	get_tree().change_scene_to_file("res://main_menu.tscn")
+
+
+#stuff i stole from the main menu
 func _run_life_loop_forever_and_ever() -> void:
 	while true: #i LOVE infinite loops
 		await get_tree().create_timer(0.15).timeout
@@ -51,7 +65,7 @@ func draw_said_grid():
 				alive_tile if grid[y][x] else dead_tile,
 				Vector2i.ZERO
 			)
-			
+
 func life():
 	var new_grid : Array= []
 	var alive_count := 0
@@ -93,7 +107,6 @@ func count_neighbors(x: int, y: int) -> int:
 				count += 1
 	return count
 
-
 func flash_and_reset():
 	flash_of_death.visible = true
 	flash_of_death.modulate.a = 0.0
@@ -108,11 +121,7 @@ func flash_and_reset():
 	await getunflashedfucker.finished
 	
 	flash_of_death.visible = false
-	
 
 func reset_timer_to_flashbang() -> void:
 	await get_tree().create_timer(cooldown_before_you_get_flashbanged_lmao).timeout
 	flash = true
-
-func _on_play_pressed() -> void:
-	get_tree().change_scene_to_file("res://main_grid.tscn")

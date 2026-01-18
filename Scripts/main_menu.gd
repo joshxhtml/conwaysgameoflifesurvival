@@ -14,7 +14,7 @@ var width: int
 var height : int
 var grid: Array = []
 var flash := true
-
+var visiblemarker := false
 func _ready() -> void:
 	randomize()
 	var viewport_size: Vector2i = get_viewport().get_visible_rect().size
@@ -119,8 +119,9 @@ func _on_play_pressed() -> void:
 	get_tree().change_scene_to_file("res://tutorial.tscn")
 
 func _on_play_2_pressed() -> void:
-	ui.visible = false
+	get_tree().change_scene_to_file("res://free_mode.tscn")
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		ui.visible = true
+		ui.visible = not visiblemarker
+		visiblemarker = not visiblemarker

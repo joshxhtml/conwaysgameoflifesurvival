@@ -1,16 +1,16 @@
-[gd_scene load_steps=14 format=3 uid="uid://dii8s0frcy7a4"]
+[gd_scene load_steps=14 format=3 uid="uid://cyah221ty4ftw"]
 
-[ext_resource type="Texture2D" uid="uid://eaw0ruupoe7v" path="res://assets/Black.png" id="1_nlkkf"]
-[ext_resource type="Script" uid="uid://c50rkfln8mguy" path="res://Scripts/main_menu.gd" id="1_qe12f"]
-[ext_resource type="Texture2D" uid="uid://bnagpikttjl4q" path="res://assets/white.png" id="2_qe12f"]
-[ext_resource type="Texture2D" uid="uid://cfdjff8olegu5" path="res://assets/yellow.png" id="3_8qtwp"]
-[ext_resource type="Texture2D" uid="uid://b43nhwy6y13ix" path="res://assets/green.png" id="4_dy7ct"]
-[ext_resource type="Texture2D" uid="uid://g1wsikgj26oy" path="res://assets/red.png" id="5_0o4t1"]
-[ext_resource type="FontFile" uid="uid://bxvgywe50qf8l" path="res://assets/determination.ttf" id="6_0k4wn"]
+[ext_resource type="Script" uid="uid://b38x2k31n3plm" path="res://free_mode.gd" id="1_401b1"]
+[ext_resource type="Texture2D" uid="uid://eaw0ruupoe7v" path="res://assets/Black.png" id="2_0d2r4"]
+[ext_resource type="Texture2D" uid="uid://bnagpikttjl4q" path="res://assets/white.png" id="3_bgbjy"]
+[ext_resource type="Texture2D" uid="uid://cfdjff8olegu5" path="res://assets/yellow.png" id="4_v6kqj"]
+[ext_resource type="Texture2D" uid="uid://b43nhwy6y13ix" path="res://assets/green.png" id="5_130dd"]
+[ext_resource type="Texture2D" uid="uid://g1wsikgj26oy" path="res://assets/red.png" id="6_oc5os"]
+[ext_resource type="FontFile" uid="uid://bxvgywe50qf8l" path="res://assets/determination.ttf" id="7_0d2r4"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qe12f"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2won3"]
 resource_name = "dead tile"
-texture = ExtResource("1_nlkkf")
+texture = ExtResource("2_0d2r4")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -1036,9 +1036,9 @@ texture = ExtResource("1_nlkkf")
 30:31/0 = 0
 31:31/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8qtwp"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dghni"]
 resource_name = "alive tile"
-texture = ExtResource("2_qe12f")
+texture = ExtResource("3_bgbjy")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -1184,9 +1184,9 @@ texture = ExtResource("2_qe12f")
 10:11/0 = 0
 11:11/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dy7ct"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lqul6"]
 resource_name = "player"
-texture = ExtResource("3_8qtwp")
+texture = ExtResource("4_v6kqj")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -1332,9 +1332,9 @@ texture = ExtResource("3_8qtwp")
 10:11/0 = 0
 11:11/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0o4t1"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6vstg"]
 resource_name = "Goal"
-texture = ExtResource("4_dy7ct")
+texture = ExtResource("5_130dd")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -1480,9 +1480,9 @@ texture = ExtResource("4_dy7ct")
 10:11/0 = 0
 11:11/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0k4wn"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qssta"]
 resource_name = "Start"
-texture = ExtResource("5_0o4t1")
+texture = ExtResource("6_oc5os")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -1709,100 +1709,126 @@ texture = ExtResource("5_0o4t1")
 13:14/0 = 0
 14:14/0 = 0
 
-[sub_resource type="TileSet" id="TileSet_8u0te"]
-sources/0 = SubResource("TileSetAtlasSource_qe12f")
-sources/1 = SubResource("TileSetAtlasSource_8qtwp")
-sources/2 = SubResource("TileSetAtlasSource_dy7ct")
-sources/3 = SubResource("TileSetAtlasSource_0o4t1")
-sources/4 = SubResource("TileSetAtlasSource_0k4wn")
+[sub_resource type="TileSet" id="TileSet_kmy2f"]
+sources/0 = SubResource("TileSetAtlasSource_2won3")
+sources/1 = SubResource("TileSetAtlasSource_dghni")
+sources/2 = SubResource("TileSetAtlasSource_lqul6")
+sources/3 = SubResource("TileSetAtlasSource_6vstg")
+sources/4 = SubResource("TileSetAtlasSource_qssta")
 
-[node name="main_menu" type="Node2D"]
-script = ExtResource("1_qe12f")
+[node name="free_mode" type="Node2D"]
+script = ExtResource("1_401b1")
+alive_tile = null
+dead_tile = null
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_top = 4.0
+offset_right = 1153.0
+offset_bottom = 648.0
+color = Color(0, 0, 0, 1)
 
 [node name="LifeLayer" type="TileMapLayer" parent="."]
-tile_set = SubResource("TileSet_8u0te")
+tile_set = SubResource("TileSet_kmy2f")
 
-[node name="WhiteFlashOfDeath" type="ColorRect" parent="."]
-offset_right = 1152.0
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="UI"]
+offset_top = 561.0
+offset_right = 1153.0
 offset_bottom = 648.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+color = Color(0.26666668, 0.26666668, 0.26666668, 0.627451)
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="UI" type="Control" parent="CanvasLayer"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 1152.0
-offset_bottom = 648.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer/UI"]
+[node name="Play" type="Button" parent="UI/ColorRect"]
 layout_mode = 0
-offset_right = 564.0
-offset_bottom = 648.0
-color = Color(0, 0, 0, 0.8627451)
-
-[node name="Description" type="Label" parent="CanvasLayer/UI"]
-layout_mode = 0
-offset_left = 68.0
-offset_top = 161.0
-offset_right = 493.0
-offset_bottom = 204.0
-theme_override_colors/font_color = Color(1, 0, 0, 1)
-theme_override_fonts/font = ExtResource("6_0k4wn")
-theme_override_font_sizes/font_size = 32
-text = "4 rules control your life"
-horizontal_alignment = 1
-
-[node name="Play" type="Button" parent="CanvasLayer/UI"]
-layout_mode = 0
-offset_left = 70.0
-offset_top = 307.0
-offset_right = 472.0
-offset_bottom = 379.0
+offset_left = 5.0
+offset_top = 8.0
+offset_right = 145.0
+offset_bottom = 80.0
 theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0.2159017, 0.21590173, 0.2159017, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.4351923, 0.43519226, 0.43519226, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("6_0k4wn")
-theme_override_font_sizes/font_size = 48
+theme_override_fonts/font = ExtResource("7_0d2r4")
+theme_override_font_sizes/font_size = 40
 text = "Play"
 flat = true
 
-[node name="Play2" type="Button" parent="CanvasLayer/UI"]
+[node name="Step" type="Button" parent="UI/ColorRect"]
 layout_mode = 0
-offset_left = 70.0
-offset_top = 402.0
-offset_right = 472.0
-offset_bottom = 474.0
+offset_left = 142.0
+offset_top = 8.0
+offset_right = 282.0
+offset_bottom = 80.0
 theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0.2159017, 0.21590173, 0.2159017, 1)
 theme_override_colors/font_hover_pressed_color = Color(0.4351923, 0.43519226, 0.43519226, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("6_0k4wn")
-theme_override_font_sizes/font_size = 48
-text = "Free Mode"
+theme_override_fonts/font = ExtResource("7_0d2r4")
+theme_override_font_sizes/font_size = 40
+text = "Step"
 flat = true
 
-[node name="Title" type="Label" parent="CanvasLayer/UI"]
+[node name="Clear" type="Button" parent="UI/ColorRect"]
 layout_mode = 0
-offset_left = 3.0
-offset_top = 28.0
-offset_right = 551.0
-offset_bottom = 226.0
-theme_override_colors/font_color = Color(1, 1, 0, 1)
-theme_override_fonts/font = ExtResource("6_0k4wn")
-theme_override_font_sizes/font_size = 48
-text = "Conways Game Of Life:
-Survival Edition"
-horizontal_alignment = 1
-autowrap_mode = 2
+offset_left = 278.0
+offset_top = 8.0
+offset_right = 418.0
+offset_bottom = 80.0
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0.2159017, 0.21590173, 0.2159017, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.4351923, 0.43519226, 0.43519226, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("7_0d2r4")
+theme_override_font_sizes/font_size = 40
+text = "Clear"
+flat = true
 
-[connection signal="pressed" from="CanvasLayer/UI/Play" to="." method="_on_play_pressed"]
-[connection signal="pressed" from="CanvasLayer/UI/Play2" to="." method="_on_play_2_pressed"]
+[node name="Random" type="Button" parent="UI/ColorRect"]
+layout_mode = 0
+offset_left = 692.0
+offset_top = 8.0
+offset_right = 843.0
+offset_bottom = 80.0
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0.2159017, 0.21590173, 0.2159017, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.4351923, 0.43519226, 0.43519226, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("7_0d2r4")
+theme_override_font_sizes/font_size = 40
+text = "Random"
+flat = true
+
+[node name="Speed" type="Label" parent="UI/ColorRect"]
+layout_mode = 0
+offset_left = 878.0
+offset_top = 20.0
+offset_right = 1137.0
+offset_bottom = 77.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("7_0d2r4")
+theme_override_font_sizes/font_size = 20
+text = "Speed
+"
+horizontal_alignment = 1
+
+[node name="SpeedSlider" type="HSlider" parent="UI/ColorRect"]
+layout_mode = 0
+offset_left = 881.0
+offset_top = 13.0
+offset_right = 1139.0
+offset_bottom = 103.0
+
+[connection signal="pressed" from="UI/ColorRect/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="UI/ColorRect/Step" to="." method="_on_step_pressed"]
+[connection signal="pressed" from="UI/ColorRect/Clear" to="." method="_on_clear_pressed"]
+[connection signal="pressed" from="UI/ColorRect/Random" to="." method="_on_random_pressed"]

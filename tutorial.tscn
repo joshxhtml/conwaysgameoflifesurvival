@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dyopvkacr3uf1"]
+[gd_scene load_steps=15 format=3 uid="uid://dyopvkacr3uf1"]
 
 [ext_resource type="Script" uid="uid://ddid1upaxn2b5" path="res://Scripts/tutorial.gd" id="1_0cr88"]
 [ext_resource type="FontFile" uid="uid://bxvgywe50qf8l" path="res://assets/determination.ttf" id="2_4t6hg"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cfdjff8olegu5" path="res://assets/yellow.png" id="5_tvjhf"]
 [ext_resource type="Texture2D" uid="uid://b43nhwy6y13ix" path="res://assets/green.png" id="6_vmw6g"]
 [ext_resource type="Texture2D" uid="uid://g1wsikgj26oy" path="res://assets/red.png" id="7_4hjyh"]
+[ext_resource type="AudioStream" uid="uid://cbgjdcjenmlot" path="res://assets/Classicals.de - Boccherini - Minuet - Op. 11, No. 5 (G. 275) - Arranged for Piano.mp3" id="8_4t6hg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bsk3x"]
 resource_name = "dead tile"
@@ -1814,6 +1815,11 @@ theme_override_fonts/font = ExtResource("2_4t6hg")
 theme_override_font_sizes/font_size = 48
 text = "Next"
 flat = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_4t6hg")
+autoplay = true
+parameters/looping = true
 
 [connection signal="pressed" from="ColorRect/Skip" to="." method="_on_skip_pressed"]
 [connection signal="pressed" from="ColorRect/Next" to="." method="_on_next_pressed"]

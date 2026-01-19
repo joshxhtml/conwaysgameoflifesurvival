@@ -16,6 +16,7 @@ var grid: Array = []
 var flash := true
 var visiblemarker := false
 func _ready() -> void:
+	
 	randomize()
 	var viewport_size: Vector2i = get_viewport().get_visible_rect().size
 	@warning_ignore("integer_division")
@@ -125,3 +126,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		ui.visible = not visiblemarker
 		visiblemarker = not visiblemarker
+
+
+func _on_quit_pressed() -> void:
+	get_tree().change_scene_to_file("res://credits.tscn")

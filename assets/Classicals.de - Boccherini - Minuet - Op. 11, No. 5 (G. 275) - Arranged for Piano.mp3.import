@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cbgjdcjenmlot"
+path="res://.godot/imported/Classicals.de - Boccherini - Minuet - Op. 11, No. 5 (G. 275) - Arranged for Piano.mp3-29e7349a01d45ea0910180ff6c3cd07d.mp3str"
+
+[deps]
+
+source_file="res://assets/Classicals.de - Boccherini - Minuet - Op. 11, No. 5 (G. 275) - Arranged for Piano.mp3"
+dest_files=["res://.godot/imported/Classicals.de - Boccherini - Minuet - Op. 11, No. 5 (G. 275) - Arranged for Piano.mp3-29e7349a01d45ea0910180ff6c3cd07d.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

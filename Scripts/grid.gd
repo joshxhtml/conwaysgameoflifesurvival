@@ -436,18 +436,18 @@ func _input(event: InputEvent) -> void:
 	if in_shop:
 		return
 	
-	if has_powerup(powerup_type.DIAGONAL) and (event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down")):
-		if event.is_action_pressed("ui_up"):
+	if has_powerup(powerup_type.DIAGONAL) and (event.is_action_pressed("up") or event.is_action_pressed("down")):
+		if event.is_action_pressed("up"):
 			move_player(Vector2i(1,-1))
-		elif event.is_action_pressed("ui_down"):
+		elif event.is_action_pressed("down"):
 			move_player(Vector2i(1,1))
-	elif event.is_action_pressed("ui_up"):
+	elif event.is_action_pressed("up"):
 		move_player(Vector2i(0,-1))
-	elif event.is_action_pressed("ui_down"):
+	elif event.is_action_pressed("down"):
 		move_player(Vector2i(0,1))
-	elif event.is_action_pressed("ui_left"):
+	elif event.is_action_pressed("left"):
 		move_player(Vector2i(-1,0))
-	elif event.is_action_pressed("ui_right"):
+	elif event.is_action_pressed("right"):
 		move_player(Vector2i(1,0)) 
 	elif event.is_action_pressed("ui_accept"):
 		blink(last_direction)
